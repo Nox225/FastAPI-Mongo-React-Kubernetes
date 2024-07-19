@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  proxy:
+    image: nginx:1.13
+    volumes:
+      - ./nginxproxy.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8001:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+networks:
+  default:
+    name: your-network
+    external: true
