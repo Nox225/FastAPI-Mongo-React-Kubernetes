@@ -11,9 +11,10 @@ function App() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
+    // const [img, setImg] = useState(new Image());
 
     const getAllTodos = useCallback(() => {
-        axios.get('http://localhost:8000/api/todo')
+        axios.get('/api/todo')
             .then((res) => {
                 setTodos(res.data);
         })
@@ -23,8 +24,11 @@ function App() {
         getAllTodos();
     }, []);
 
+    // console.log(img);
+    
+
     const addTodo = () => {
-        axios.post('http://localhost:8000/api/todo', {
+        axios.post('/api/todo', {
             title: title,
             description: desc
         })
@@ -36,8 +40,13 @@ function App() {
     }
 
     const deleteTodo = (title: string) => {
-        axios.delete(`http://localhost:8000/api/todo/${title}`)
+        axios.delete(`/api/todo/${title}`)
             .then(() => getAllTodos());
+    }
+
+    const deleteAllTodos = () => {
+        axios.delete(`/api/todo`)
+            .then(() => setTodos([]));
     }
 
     return (
@@ -56,10 +65,10 @@ function App() {
             <>
                 {todos.map((todo, index) => {
                     return(
-                        <div style={{display: 'flex', gap: '12px'}}>
-                            <div key={index}>{todo.title}</div>
+                        <div style={{display: 'flex', gap: '12px'}} key={index}>
+                            <div>{todo.title}</div>
                             <div>-</div>
-                            <div key={index}>{todo.description}</div>
+                            <div>{todo.description}</div>
                             <div 
                                 style={{color: 'red'}} 
                                 onClick={() => { deleteTodo(todo.title) }}
@@ -70,6 +79,8 @@ function App() {
                     )
                 })}
             </>
+            <button onClick={() => { deleteAllTodos() }}>Delete all</button>
+            {/* <img src='http://localhost:8000/api/img' alt="" content='image/gif' /> */}
         </>
     )
 }

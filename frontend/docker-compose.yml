@@ -5,7 +5,7 @@ services:
     volumes:
       - ./nginxproxy.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "8001:80"
+      - "8010:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
