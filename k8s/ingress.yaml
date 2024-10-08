@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: react-test-ingress-antos
+  annotations:
+    cert-manager.io/issuer: react-test-issuer
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+      - ant-os.ovh
+      secretName: tls-auto-ant-os.ovh
+  rules:
+    - host: ant-os.ovh
+      http:
+        paths:
+          - path: /wagtail
+            pathType: Prefix
+            backend:
+              service:
+                name: wagtail-service
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

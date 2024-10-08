@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-nginx-conf
+data:
+  REACT_APP_BASE_URL: "https://ant-os.ovh"
+  mime.types: |
+    types {
+      text/html                             html htm shtml;
+      text/css                              css;
+      text/xml                              xml rss;
+      image/gif                             gif;
+      image/jpeg                            jpeg jpg;
+      application/x-javascript              js;
+      text/plain                            txt;
+      text/x-component                      htc;
+      text/mathml                           mml;
+      image/png                             png;
+      image/x-icon                          ico;
+      image/x-jng                           jng;
+      image/vnd.wap.wbmp                    wbmp;
+      application/java-archive              jar war ear;
+      application/mac-binhex40              hqx;
+      application/pdf                       pdf;
+      application/x-cocoa                   cco;
+      application/x-java-archive-diff       jardiff;
+      application/x-java-jnlp-file          jnlp;
+      application/x-makeself                run;
+      application/x-perl                    pl pm;
+      application/x-pilot                   prc pdb;
+      application/x-rar-compressed          rar;
+      application/x-redhat-package-manager  rpm;
+      application/x-sea                     sea;
+      application/x-shockwave-flash         swf;
+      application/x-stuffit                 sit;
+      application/x-tcl                     tcl tk;
+      application/x-x509-ca-cert            der pem crt;
+      application/x-xpinstall               xpi;
+      application/zip                       zip;
+      application/octet-stream              deb;
+      application/octet-stream              bin exe dll;
+      application/octet-stream              dmg;
+      application/octet-stream              eot;
+      application/octet-stream              iso img;
+      application/octet-stream              msi msp msm;
+      audio/mpeg                            mp3;
+      audio/x-realaudio                     ra;
+      video/mpeg                            mpeg mpg;
+      video/quicktime                       mov;
+      video/x-flv                           flv;
+      video/x-msvideo                       avi;
+      video/x-ms-wmv                        wmv;
+      video/x-ms-asf                        asx asf;
+      video/x-mng                           mng;
+      image/svg+xml                         svg;
+      image/webp                            webp;
+    }
+  nginx.conf: |
+    pid /tmp/nginx/nginx.pid;
+    worker_processes  3;
+    error_log  /var/log/nginx/error.log;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      include    mime.types;
+      sendfile on;
+    
+      client_body_temp_path /tmp/nginx/client_temp;
+      proxy_temp_path       /tmp/nginx/proxy_temp_path;
+      fastcgi_temp_path     /tmp/nginx/fastcgi_temp;
+      uwsgi_temp_path       /tmp/nginx/uwsgi_temp;
+      scgi_temp_path        /tmp/nginx/scgi_temp;
+    
+      server {
+          listen       8080;
+
+          gzip  on;
+          gzip_http_version 1.0;
+          gzip_comp_level 2;
+          gzip_min_length 1100;
+          gzip_buffers     4 8k;
+          gzip_proxied any;
+          gzip_types
+            # text/html is always compressed by HttpGzipModule
+            text/css
+            text/javascript
+            text/xml
+            text/plain
+            text/x-component
+            application/javascript
+            application/x-javascript
+            application/json
+            application/xml
+            application/rss+xml
+            font/truetype
+            font/opentype
+            application/vnd.ms-fontobject
+            image/svg+xml;
+
+          gzip_static on;
+
+          gzip_proxied        expired no-cache no-store private auth;
+          gzip_disable        "MSIE [1-6]\.";
+          gzip_vary           on;
+
+
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
+              try_files $uri /index.html;
+          }
+          
+          error_page   500 502 503 504  /50x.html;
+          location = /50x.html {
+              root   /usr/share/nginx/html;
+          }
+
+      }
+    }

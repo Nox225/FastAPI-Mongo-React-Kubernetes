@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: react-test-issuer
+  namespace: react-test
+spec:
+  acme:
+    email: fpdi225@gmail.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: priv-react-test-key
+    solvers:
+      - http01:
+          ingress:
+            class: traefik
+
