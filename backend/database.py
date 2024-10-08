@@ -1,9 +1,12 @@
 from model import Todo
-
+import os
 import motor.motor_asyncio
 
+MONGO_USERNAME = os.getenv("MONGO_USERNAME", "")
+MONGO_PASSWORD = os.getenv("MONGO_PASSWORD", "")
+
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    "mongodb+srv://filipdomanski:72924klMLypCUdfx@mycluster.q60yvly.mongodb.net/"
+        f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@mycluster.q60yvly.mongodb.net/"
 )
 
 database = client.TodoList
@@ -32,3 +35,7 @@ async def update_todo(title, desc):
 async def remove_todo(title):
     await collection.delete_one({"title": title})
     return True
+
+async def remove_all_todos():
+    result = await collection.delete_many({})
+    return result.deleted_count

@@ -52,3 +52,11 @@ async def delete_todo(title):
     if response:
         return {"message": "Todo deleted successfully"}
     raise HTTPException(status_code=400, detail="Error deleting todo")
+
+@app.delete("/api/todo")
+async def delete_all_todos():
+    try:
+        response = await remove_all_todos()
+        return {"message": f"All todos deleted successfully. Deleted count: {response}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error deleting all todos")
